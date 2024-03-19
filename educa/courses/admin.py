@@ -1,0 +1,28 @@
+from django.contrib import admin
+from courses.models import Course, Module, Subject
+
+
+@admin.register(Subject)
+class SubjectAdmin(admin.ModelAdmin):
+    """Администрирование предметов."""
+    list_display = ('title', 'slug')
+    prepopulated_fields = {'slug': ('title',)}
+
+
+class ModuleInline(admin.StackedInline):
+    model = Module
+
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    """Администрирование курсов."""
+    list_display = ('title', 'subject', 'created')
+    list_filter = ('created', 'subject')
+    search_fields = ('title', 'overview')
+    prepopulated_fields = {'slug': ('title',)}
+    inlines = [ModuleInline]
+
+
+admin.site.site_title = 'Административный сайт Educa'
+admin.site.site_header = 'Администрирование Educa'
+admin.site.empty_value_display = 'Не задано'
